@@ -7,7 +7,7 @@
 ## � How to Use
 
 ### 1. Open
-Open the dashboard where you deployed it (e.g., `https://your-app.vercel.app`).
+Open the dashboard where you deployed it: **[https://salla-klaviyo-simulator.vercel.app/](https://salla-klaviyo-simulator.vercel.app/)**
 
 ### 2. Configure
 *   **Merchant ID**: Auto-generated for you.
