@@ -53,9 +53,11 @@ const dom = {
 
 // --- Initialization ---
 function init() {
+    // Clear legacy cache to ensure clean state
+    if (localStorage.getItem('gtm_preview_header')) localStorage.removeItem('gtm_preview_header');
+
     state.merchantId = generator.generateMerchantId();
     dom.merchantIdInput.value = state.merchantId;
-
     renderKeyInputs();
 }
 
