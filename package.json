@@ -1,0 +1,31 @@
+{
+  "name": "salla-klaviyo-scalability-test",
+  "version": "1.0.0",
+  "description": "Scalability testing tool for Salla-Klaviyo integration",
+  "main": "src/load-test/scalability-tester.js",
+  "scripts": {
+    "test:connection": "node src/test-connection.js",
+    "test:service": "node src/automated-service.js",
+    "simulate": "node src/interactive-test.js",
+    "test:light": "node src/load-test/scalability-tester.js light",
+    "test:medium": "node src/load-test/scalability-tester.js medium",
+    "test:heavy": "node src/load-test/scalability-tester.js heavy",
+    "test:stress": "node src/load-test/scalability-tester.js stress",
+    "test:custom": "node src/load-test/scalability-tester.js custom"
+  },
+  "keywords": [
+    "salla",
+    "klaviyo",
+    "load-test",
+    "scalability"
+  ],
+  "author": "",
+  "license": "MIT",
+  "dependencies": {
+    "axios": "^1.6.5",
+    "chalk": "^4.1.2",
+    "dotenv": "^16.3.1",
+    "inquirer": "^8.2.7",
+    "readline-sync": "^1.4.10"
+  }
+}

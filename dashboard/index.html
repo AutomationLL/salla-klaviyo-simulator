@@ -1,0 +1,199 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Test Klaviyo | Salla Simulator</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Outfit:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+</head>
+
+<body>
+  <div id="app">
+    <!-- Auth Screen -->
+    <section id="auth-screen" class="screen active">
+      <div class="glass-card login-card">
+        <div class="logo">
+          <span class="logo-icon">📡</span>
+          <h1>Test<span>Klaviyo</span></h1>
+        </div>
+        <p class="subtitle">Enter admin credentials to access the simulator</p>
+        <form id="login-form">
+          <div class="form-group">
+            <label for="email">Admin User</label>
+            <input type="text" id="email" placeholder="admin" required />
+          </div>
+          <div class="form-group">
+            <label for="password">Password</label>
+            <input type="password" id="password" placeholder="••••••••" required />
+          </div>
+          <button type="submit" class="btn btn-primary">Sign In</button>
+          <p id="login-error" class="error-msg hidden">Invalid credentials. Hint: admin / admin</p>
+        </form>
+      </div>
+    </section>
+
+    <!-- Dashboard Screen -->
+    <section id="dashboard-screen" class="screen hidden">
+      <nav class="navbar">
+        <div class="nav-brand">
+          <span class="logo-icon">📡</span>
+          <h1>Test<span>Klaviyo</span></h1>
+        </div>
+        <div class="nav-user">
+          <span id="user-display">admin</span>
+          <button id="logout-btn" class="btn btn-outline">Logout</button>
+        </div>
+      </nav>
+
+      <main class="dashboard-content">
+        <aside class="sidebar">
+          <div class="config-section glass-card">
+            <h3>Configuration</h3>
+
+            <div class="glass-card" style="margin-bottom: 1.5rem; background: rgba(255, 255, 255, 0.03);">
+              <h4 style="margin-bottom: 0.5rem; display: flex; align-items: center; gap: 6px;">
+                <span>ℹ️</span> How It Works
+              </h4>
+              <p style="font-size: 0.8rem; color: var(--text-muted); line-height: 1.4;">
+                This tool simulates a Salla store sending data to your server.
+                <br><br>
+                <strong>1. Installation:</strong> run this FIRST to register the merchant.<br>
+                <strong>2. Settings:</strong> Adds your Klaviyo Key to the database.<br>
+                <strong>3. Activity:</strong> Simulates customers & orders to test tracking.
+              </p>
+            </div>
+
+            <div class="alert-info"
+              style="margin-bottom: 1.5rem; padding: 1rem; background: rgba(30, 64, 175, 0.2); border-left: 4px solid #3b82f6; border-radius: 8px; font-size: 0.85rem; color: #bfdbfe;">
+              ⚠️ <strong>Required:</strong> Run the <strong>app.store.authorize</strong> (Installation) event first
+              whenever you use a new Merchant ID. This registers the merchant in the database before you add the private
+              key.
+            </div>
+            <div class="form-group">
+              <label for="endpoint">Webhook Endpoint</label>
+              <input type="text" id="endpoint" value="https://track.hydralyte-sa.com/data" />
+            </div>
+            <div class="form-group">
+              <label>Klaviyo Private Keys</label>
+              <div id="keys-container" class="keys-stack">
+                <!-- Injected via JavaScript -->
+              </div>
+              <button id="add-key-btn" class="btn btn-outline btn-sm" style="margin-top: 8px; width: 100%;">+ Add
+                Another Key</button>
+            </div>
+            <div class="form-group">
+              <label for="gtm-preview">GTM Preview Header</label>
+              <input type="text" id="gtm-preview" placeholder="X-Gtm-Server-Preview..." />
+            </div>
+            <div class="form-group">
+              <label for="merchant-id">Merchant ID (Simulated)</label>
+              <div class="input-with-button">
+                <input type="text" id="merchant-id" readonly />
+                <button id="refresh-merchant" title="Regenerate Merchant ID">🔄</button>
+              </div>
+            </div>
+          </div>
+
+          <div class="event-selection glass-card">
+            <h3>Event Selection</h3>
+            <div class="event-tabs">
+              <button class="event-tab active" data-event="app.settings.updated">Settings Sync</button>
+              <button class="event-tab" data-event="customer.created">Customer Created</button>
+              <button class="event-tab" data-event="order.created">Order Created</button>
+            </div>
+            <div class="event-config">
+              <div class="form-group">
+                <label for="event-name">Event Name</label>
+                <input type="text" id="event-name" value="app.settings.updated" />
+              </div>
+              <div class="form-group">
+                <label for="event-status">Target Status</label>
+                <select id="event-status">
+                  <option value="success">Success (200)</option>
+                  <option value="error">Error (500)</option>
+                  <option value="unauthorized">Unauthorized (401)</option>
+                </select>
+              </div>
+              <button id="trigger-event" class="btn btn-success btn-full">Fire Webhook</button>
+            </div>
+          </div>
+
+          <div class="stress-test glass-card">
+            <h3>Scalability Test</h3>
+            <div class="stress-params">
+              <div class="form-group">
+                <label for="concurrency">Concurrent Accounts</label>
+                <input type="number" id="concurrency" value="2" min="1" max="100" />
+              </div>
+              <button id="run-stress-test" class="btn btn-warning btn-full">Run Stress Test</button>
+            </div>
+          </div>
+        </aside>
+
+        <section class="main-stats">
+          <div class="stats-row">
+            <div class="stat-card glass-card">
+              <div class="stat-label">Total Requests</div>
+              <div class="stat-value" id="total-requests">0</div>
+            </div>
+            <div class="stat-card glass-card">
+              <div class="stat-label">Success Rate</div>
+              <div class="stat-value success" id="success-rate">0%</div>
+            </div>
+            <div class="stat-card glass-card">
+              <div class="stat-label">Avg. Response</div>
+              <div class="stat-value" id="avg-response">0ms</div>
+            </div>
+          </div>
+
+          <div class="console-box glass-card" style="height: 350px;">
+            <div class="box-header">
+              <h3>Live Event Stream</h3>
+              <button id="clear-console" class="btn-text">Clear</button>
+            </div>
+            <div id="console-output" class="console-terminal">
+              <div class="system-msg">Console ready... System waiting for triggers.</div>
+            </div>
+          </div>
+
+          <div class="account-breakdown glass-card">
+            <div class="box-header">
+              <h3>
+                Multi-Account Performance
+                <span class="tooltip-icon"
+                  data-tooltip="Note: 1 Salla Order = Multiple Klaviyo Events (Placed Order + Ordered Product per item). Expect higher event counts in Klaviyo.">ℹ️</span>
+              </h3>
+              <span class="badge" id="active-sims">0 Active Merchants</span>
+            </div>
+            <div class="table-container">
+              <table id="accounts-table">
+                <thead>
+                  <tr>
+                    <th>Account</th>
+                    <th>Merchant ID</th>
+                    <th>Private Key</th>
+                    <th>Status</th>
+                    <th>Events Sent</th>
+                    <th>Last Status</th>
+                  </tr>
+                </thead>
+                <tbody id="accounts-body">
+                  <tr class="placeholder-row">
+                    <td colspan="6" style="text-align: center; color: var(--text-muted); padding: 2rem;">No active
+                      stress test. Start a test to see attribution breakdown.</td>
+                  </tr>
+                </tbody>
+              </table>
+            </div>
+          </div>
+        </section>
+      </main>
+    </section>
+  </div>
+  <script type="module" src="/main.js"></script>
+</body>
+
+</html>
