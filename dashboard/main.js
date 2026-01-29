@@ -7,7 +7,7 @@ const state = {
     isAuthenticated: false,
     merchantId: '',
     privateKeys: [localStorage.getItem('klaviyo_private_key') || ''],
-    gtmPreview: localStorage.getItem('gtm_preview_header') || '',
+
     endpoint: 'https://track.hydralyte-sa.com/data',
     selectedEvent: 'app.settings.updated',
     stats: {
@@ -30,7 +30,7 @@ const dom = {
     endpointInput: document.getElementById('endpoint'),
     keysContainer: document.getElementById('keys-container'),
     addKeyBtn: document.getElementById('add-key-btn'),
-    gtmPreviewInput: document.getElementById('gtm-preview'),
+
     merchantIdInput: document.getElementById('merchant-id'),
     refreshMerchantBtn: document.getElementById('refresh-merchant'),
 
@@ -55,7 +55,7 @@ const dom = {
 function init() {
     state.merchantId = generator.generateMerchantId();
     dom.merchantIdInput.value = state.merchantId;
-    dom.gtmPreviewInput.value = state.gtmPreview;
+
     renderKeyInputs();
 }
 
@@ -130,11 +130,7 @@ async function fireWebhook(payload) {
         'Content-Type': 'application/json'
     };
 
-    const previewId = dom.gtmPreviewInput.value.trim();
-    if (previewId) {
-        headers['X-Gtm-Server-Preview'] = previewId;
-        localStorage.setItem('gtm_preview_header', previewId);
-    }
+
 
     // Show payload preview in console for the team
     logToConsole(payload.event, 'SEND', `Payload generated... Check browser console for detail`, 'info');
