@@ -6,7 +6,7 @@ import { SallaWebhookGenerator } from './simulator.js'
 const state = {
     isAuthenticated: false,
     merchantId: '',
-    privateKeys: [localStorage.getItem('klaviyo_private_key') || 'pk_027a475ea8d529dee308706c58ede74156'],
+    privateKeys: [localStorage.getItem('klaviyo_private_key') || ''],
     gtmPreview: localStorage.getItem('gtm_preview_header') || '',
     endpoint: 'https://track.hydralyte-sa.com/data',
     selectedEvent: 'app.settings.updated',
